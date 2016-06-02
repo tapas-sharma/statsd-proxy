@@ -1,0 +1,24 @@
+#
+# Define the proxy properties here
+#
+proxy_port = 8272
+proxy_ip=localhost
+#
+# To deamonize the proxy write 1 else 0
+# default = 1
+#
+daemonize= 1
+#
+#Log levels, there are 3
+# 1 - INFO
+# 2 - INFO + ERROR
+# 3 - DEBUG
+#default 1
+# log file is in /var/log/startd_proxy.log
+log_level = 3
+
+statsd_server_ip=127.0.0.1
+statsd_server_port = 8152
+
+redis_server_ip=localhost
+redis_server_port=6379

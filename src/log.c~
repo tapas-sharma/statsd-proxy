@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <hiredis.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include "conf_struct.h"
+#include "log.h"
+
+extern confStruct configuration;
+
+ret_val init_log_file()
+{
+  configuration.log_file = fopen(LOG_FILE, "a+");
+  if(configuration.log_file == NULL)
+    return FALSE;
+  return TRUE;
+}
