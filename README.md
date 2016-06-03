@@ -72,7 +72,6 @@ There is a sample configuration file, in the conf folder called __statsd_proxy.c
 
 # Limitations and Enhancements
 * See if we can try using syslog() to log things
-* Daemonizing in not yet implemented, should be available in next commits
 * Add test cases to unit test the code, should be available in next few commits
 * Testing with multiple clients connecting at the same time.
 * Creating a wiki highlighting the design.
