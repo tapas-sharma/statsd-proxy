@@ -26,10 +26,19 @@ To compile the code use the provided make file
 cd statsd-proxy
 make
 ~~~~
-This will create a bin folder under which there is the server. To run you can do
+Before running you might need to give permission to the following path, for the user you are running the server as
+~~~~
+/var/log/
+~~~~
+The server create a log file under this path with the name
+~~~~
+/var/log/startd_proxy.log
+~~~~
+After compiling the server, and setting the log file you can run the server as
 ~~~~
 bin/statsd_porxy [conf_file]
 ~~~~
+
 Configuration file is optional, if not provided the server assumes everything is running locally and on the default ports.
         
 ## Configuration
@@ -60,6 +69,13 @@ There is a sample configuration file, in the conf folder called __statsd_proxy.c
             redis_server_ip=localhost
             redis_server_port=6379
 ~~~~
+
+# Limitations and Enhancements
+* See if we can try using syslog() to log things
+* Daemonizing in not yet implemented, should be available in next commits
+* Add test cases to unit test the code, should be available in next few commits
+* Testing with multiple clients connecting at the same time.
+* Creating a wiki highlighting the design.
 
 # Version
 0.1
