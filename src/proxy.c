@@ -11,7 +11,7 @@
 #include <sys/socket.h>
 #include <errno.h>
 #include <hiredis.h>
-
+#include <signal.h>
 #include "log.h"
 #include "conf_struct.h"
 #include "queue.h"
@@ -19,6 +19,7 @@
 #define TAKE_WRITE_LOCK(x) pthread_rwlock_wrlock(x)
 #define TAKE_READ_LOCK(x)  pthread_rwlock_rdlock(x)
 #define UNLOCK(x)          pthread_rwlock_unlock(x)
+#define PID_FILE "/tmp/statsd_proxy.pid"
 
 //global configuration for proxy and connections
 confStruct  configuration;
@@ -27,6 +28,37 @@ Queue      *req_queue;          // all the requests are here
 
 pthread_rwlock_t     req_queue_lock; // lock on the queue
 pthread_rwlockattr_t rwattr ;   //attributes for this lock
+
+/**
+ * We will register SIGKILL, SIGINT and SIGSTOP
+ */
+
+
+void sig_handler(int signo)
+{
+    Queue *node;
+    if (signo == SIGINT)
+        log(LOG_INFO, "received SIGINT\n");
+    log(LOG_INFO, "Shutdown Initiating");
+    //remove pid file so that we can start later
+    remove(PID_FILE);
+    //close redis connection
+    redisFree(connections.redis_conn);
+    //close udp sockets
+    close(connections.proxy_fd);
+    close(connections.statsd_conn);
+    while((node = dequeue(&req_queue)))
+        free_queue_struct(node);
+    log(LOG_INFO, "Shutdown Complete");
+    fclose(configuration.log_file);
+    exit(1);
+}
+
+void register_signals()
+{
+    if (signal(SIGINT, sig_handler) == SIG_ERR)        
+        log(LOG_ERROR, "Not able to register SIGNALS");
+}
 
 /**
  * This will run in a while(1), processing the client UDP requests
@@ -198,7 +230,25 @@ int main(int argc, char *argv[])
 {
     int ret;
     pthread_t threads[2];
-      
+    FILE *pid_file;
+    
+    if( access( PID_FILE, F_OK ) != -1 )
+    {
+        // file exists
+        log(LOG_ERROR, "statsd_proxy is already running.");
+        exit(1);
+    }
+    else
+    {
+        register_signals();
+        pid_file=fopen(PID_FILE, "w");
+        fprintf(pid_file, "%d", getpid());
+        fflush(pid_file);
+        fclose(pid_file);
+    }
+
+    
+    
     init_configuration();
     init_log_file();
     if(argc==2)
@@ -208,6 +258,19 @@ int main(int argc, char *argv[])
     }
     print_configuration();
     fflush(configuration.log_file);
+
+    if(configuration.daemonize == TRUE)
+    {
+        // daemonize the process
+        // and change directory to /
+        if(daemon(0,1) < 0)  // passing 1 will not close the std*** fd's
+        {
+            log(LOG_ERROR, "Not able to daemonize the process.");
+            printf("Not able to daemonize the server");
+            exit(1);
+        }
+    }
+    register_signals();
     /**
      * initialize the connection object, since there are no default
      * values, we can just bzero it here
