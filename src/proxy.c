@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <hiredis.h>
 #include <signal.h>
+#include <time.h>
 #include "log.h"
 #include "conf_struct.h"
 #include "queue.h"

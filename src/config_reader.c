@@ -9,7 +9,7 @@
 #include <netdb.h>
 #include <string.h>
 #include <ctype.h>
-
+#include <time.h>
 #include "conf_struct.h"
 #include "log.h"
 

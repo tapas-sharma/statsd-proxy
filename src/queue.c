@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <errno.h>
+#include <time.h>
 #include <hiredis.h>
 #include "log.h"
 #include "conf_struct.h"
