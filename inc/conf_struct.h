@@ -15,43 +15,43 @@
 #define DELIM		'='
 
 typedef enum retval
-  {
+{
     FALSE=0,
     TRUE
-  }ret_val;
+}ret_val;
 
 typedef struct conf_struct
 {  
-  int proxy_port;
-  int statsd_server_port;
-  int redis_server_port;
+    int proxy_port;
+    int statsd_server_port;
+    int redis_server_port;
   
-  char *proxy_ip;
-  char *statsd_server_ip;
-  char *redis_server_ip;
+    char *proxy_ip;
+    char *statsd_server_ip;
+    char *redis_server_ip;
 
-  FILE *config_file;
-  FILE *log_file;
+    FILE *config_file;
+    FILE *log_file;
 
-  int log_level;
+    int log_level;
   
-  unsigned char daemonize:1;
-  unsigned char default_init:1;
-  unsigned char log_file_closed:1;
-  unsigned char conf_file_closed:1;
+    unsigned char daemonize:1;
+    unsigned char default_init:1;
+    unsigned char log_file_closed:1;
+    unsigned char conf_file_closed:1;
   
 }confStruct;
 
 typedef struct conn_struct
 {
-  int statsd_conn;
-  int proxy_fd;
-  redisContext *redis_conn;
-  struct sockaddr_in send_to;
-  socklen_t send_sock_len;
-  unsigned char statsd_conn_open:1;
-  unsigned char redis_conn_open:1;
-  unsigned char proxy_conn_open:1;
+    int statsd_conn;
+    int proxy_fd;
+    redisContext *redis_conn;
+    struct sockaddr_in send_to;
+    socklen_t send_sock_len;
+    unsigned char statsd_conn_open:1;
+    unsigned char redis_conn_open:1;
+    unsigned char proxy_conn_open:1;
 }connStruct;
 
 
