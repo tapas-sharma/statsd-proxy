@@ -19,8 +19,8 @@ extern confStruct configuration;
 
 ret_val init_log_file()
 {
-  configuration.log_file = fopen(LOG_FILE, "a+");
-  if(configuration.log_file == NULL)
-    return FALSE;
-  return TRUE;
+    configuration.log_file = fopen(LOG_FILE, "a+");
+    if(configuration.log_file == NULL)
+        return FALSE;
+    return TRUE;
 }
