@@ -26,7 +26,7 @@ SOURCES     := $(shell find $(SRCDIR) -type f -name "*.$(SRCEXT)")
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 
 #Defauilt Make
-all: resources $(TARGET)
+all: resources directories $(TARGET)
 
 #Remake
 remake: cleaner all
@@ -39,6 +39,7 @@ directories:
 #Clean only Objecst
 clean:
 	@$(RM) -rf $(BUILDDIR)
+	@$(RM) -rf $(TARGETDIR)	
 
 #Full Clean, Objects and Binaries
 cleaner: clean
