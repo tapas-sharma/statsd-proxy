@@ -32,7 +32,7 @@ Before running you might need to give permission to the following path, for the 
 ~~~~
 The server create a log file under this path with the name
 ~~~~
-/var/log/startd_proxy.log
+/var/log/statsd_proxy.log
 ~~~~
 After compiling the server, and setting the log file you can run the server as
 ~~~~
