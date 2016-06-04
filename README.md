@@ -1,4 +1,4 @@
-# README #
+# STATSD_PROXY #
 
 statsd-proxy, a proxy server that listens on a configured UDP port (default: 8272) forwards the requests to statsd server and publishes data to Redis.
 * Quick summary
@@ -18,6 +18,7 @@ Other dependices include
 * glibc
 * pthreads
 * hiredis
+* redi.sh
 
 ## Compiling
 
@@ -39,10 +40,25 @@ After compiling the server, and setting the log file you can run the server as
 bin/statsd_porxy [conf_file]
 ~~~~
 
-Configuration file is optional, if not provided the server assumes everything is running locally and on the default ports.
+##Testing
+
+To test make sure the following prerequisites are met
+* You have a local instance of statsd server running on default port
+* You have local instance of redis running on default port
+If the statsd and redis are running on non-default and other machines, change the following file(s) under the **tests** to depict the same
+
+* Change the test.conf to point to the correct values
+* Change the start_test.sh to point to correct redis server values
++ Comment the line __/opt/statsd/bin/statsd configuration.js__ so that we do not try to start a local statsd server
+
+Once, you have the settings done run the following command from the source head
+~~~~
+make test
+~~~~
         
 ## Configuration
 
+Configuration file is optional, if not provided the server assumes everything is running locally and on the default ports.
 There is a sample configuration file, in the conf folder called __statsd_proxy.conf.example__, the configuration properties are self explanatory
 
 ~~~~
