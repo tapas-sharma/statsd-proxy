@@ -86,6 +86,9 @@ There is a sample configuration file, in the conf folder called __statsd_proxy.c
             redis_server_port=6379
 ~~~~
 
+# High level Design flow
+![statsd_proxy.png](https://bitbucket.org/repo/nM7K57/images/132532422-statsd_proxy.png)
+
 # Limitations and Enhancements
 * See if we can try using syslog() to log things
 * Add test cases to unit test the code, should be available in next few commits
