@@ -261,14 +261,21 @@ int main(int argc, char *argv[])
         fclose(pid_file);
     }
 
-    
-    
     init_configuration();
     init_log_file();
     if(argc==2)
     {
-        log(LOG_INFO,"Loading configuration from %s.", argv[1]);
-        read_config_file(argv[1]);
+        if( access( argv[1], F_OK ) != -1 )
+        {
+            log(LOG_INFO,"Loading configuration from %s.", argv[1]);
+            read_config_file(argv[1]);
+        }
+        else
+        {
+        log(LOG_ERROR, "Cannot Read Log file at %s", argv[1]);
+        printf("[ERROR] Cannot Read Log File, please verify the file permissions or path. (%s)\n", argv[1]);
+        exit(1);
+        }
     }
     print_configuration();
     fflush(configuration.log_file);
