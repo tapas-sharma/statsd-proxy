@@ -1,7 +1,8 @@
 # STATSD_PROXY #
 
 statsd-proxy, a proxy server that listens on a configured UDP port (default: 8272) forwards the requests to statsd server and publishes data to Redis.
-* Quick summary
+
+# Quick summary
 
 The proxy is capabale of performaing the following functions
 
