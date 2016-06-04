@@ -1,0 +1,4 @@
+4 Jun 12:57:54 - [7981] reading config file: configuration.js
+4 Jun 12:57:54 - server is up INFO
+4 Jun 12:57:56 - DEBUG: statsd_proxy.count:1|c@0.1
+4 Jun 12:57:56 - DEBUG: statsd_proxy.timer:2|ms

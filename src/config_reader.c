@@ -19,6 +19,8 @@ extern confStruct configuration;
  * Initialize the configuration strucure with the default values
  * this will take the global configuration and bzero it out.
  * Then assign the default values.
+ * @return
+ * TRUE Always return TRUE since this is in memory DS
  */
 ret_val init_configuration()
 {
@@ -46,7 +48,7 @@ ret_val init_configuration()
 
     configuration.log_level = LOG_INFO; //default log level
   
-    configuration.daemonize = TRUE; //DEFAULT value of daemonize, will change from the conf file
+    configuration.daemonize = FALSE; //DEFAULT value of daemonize, will change from the conf file
     configuration.default_init = TRUE; //TRUE since these are the default values
     configuration.log_file_closed = TRUE; //TRUE since we have not opened the file
     configuration.conf_file_closed = TRUE; //TRUE since we have not opened the file
@@ -56,7 +58,7 @@ ret_val init_configuration()
 
 
 /**
- * Prints the info at log level info
+ * Prints the configuration at log level info
  */
 void print_configuration()
 {
@@ -90,9 +92,12 @@ void print_configuration()
 
 
 /**
- * Get IP from the hostname
+ * helper function to Get IP from the hostname
+  * @return
+ * TRUE When we were able to resolve the hostname
+ * FALSE when there was some issue, look in the logs
  */
-int get_addr_info(char *hostname , char *ip)
+ret_val get_addr_info(char *hostname , char *ip)
 {
     struct addrinfo hints, *servinfo, *p;
     struct sockaddr_in *h;
@@ -123,7 +128,11 @@ int get_addr_info(char *hostname , char *ip)
 /**
  * Take the file path from the commandline and
  * open the file in the configuration structure
- * Read and assign the values
+ * Read and assign the values.
+ * Also, set the deafult_init flag to FALSE
+ * @return
+ * TRUE When we were able to set the configrations succesfully
+ * FALSE when there was some issue, look in the logs
  */
 ret_val read_config_file(const char *file_path)
 {
@@ -136,9 +145,10 @@ ret_val read_config_file(const char *file_path)
         log(LOG_INFO,"Cannot Open Configuration File %s.", file_path);
         return FALSE;
     }
-  
+    // start parsing the file char by char
     while( (iter=getc(configuration.config_file)) != EOF )
     {
+        //skip newlines
         if(iter == '\n')
             continue;
         //skip comments
@@ -148,6 +158,7 @@ ret_val read_config_file(const char *file_path)
             continue;
         }
         char_cnt = 0;
+        // go back one char since we would have moved ahead here
         fseek(configuration.config_file, -1 ,SEEK_CUR);
         while( (iter=getc(configuration.config_file))!=DELIM ) // read till DELIM
         {
@@ -244,8 +255,9 @@ ret_val read_config_file(const char *file_path)
         }
         bzero(&property,24);
     }
+    //close the file so no fd leaks
     fclose(configuration.config_file);
-    configuration.config_file = NULL;
+    configuration.config_file = NULL; // done reading
     configuration.default_init = FALSE;
     return TRUE;
 }

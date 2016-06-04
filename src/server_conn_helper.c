@@ -25,6 +25,8 @@ extern connStruct connections;
 
 /**
  * Open a UDP IPv4 socket and bind to it
+ * @return
+ * socket return the successfully open socket
  */
 int get_socket(int port, char *ip, ret_val bind_flag)
 {
@@ -37,6 +39,7 @@ int get_socket(int port, char *ip, ret_val bind_flag)
   if(sock  < 0)
     {
       log(LOG_ERROR,"Opening UDP socket failed :%s\n", strerror(errno) );
+      close(sock);
       return FALSE;
     }
 
@@ -50,16 +53,24 @@ int get_socket(int port, char *ip, ret_val bind_flag)
   
   if(bind_flag == TRUE)
     {
-      if( bind(sock, (struct sockaddr *) &sin, sizeof(sin)) )
-	{
-	  log(LOG_ERROR,"Binding UDP socket failed :%s\n", strerror(errno) );
-	  return FALSE;
-	}
+        if( bind(sock, (struct sockaddr *) &sin, sizeof(sin)) )
+        {
+            log(LOG_ERROR,"Binding UDP socket failed :%s\n", strerror(errno) );
+            close(sock);
+            return FALSE;
+        }
     }
   log(LOG_INFO, "Opened sock %d for %s:%d bind: %d", sock, ip, port, bind_flag);
   return sock;
 }
 
+/**
+ * Helper function to open a connection to the redis server
+ * using the hiredis library
+  * @return
+ * TRUE When we were able to open connection to the redis server
+ * FALSE when there was some issue, look in the logs
+ */
 ret_val open_redis_connection()
 {
   struct timeval timeout = {TIMEOUT_SEC, TIMEOUT_MS};
@@ -72,12 +83,18 @@ ret_val open_redis_connection()
       redisFree(connections.redis_conn);
       return FALSE;
     }
-  log(LOG_DEBUG, "Connection to redis was succesfull on %s:%d",
+  log(LOG_INFO, "Connection to redis was succesfull on %s:%d",
       configuration.redis_server_ip,configuration.redis_server_port);
   connections.redis_conn_open = TRUE;
   return TRUE;
 }
 
+/**
+ * Helper function to open a connection to the statsd server configured
+  * @return
+ * TRUE When we were able to open connection succesfully
+ * FALSE when there was some issue, look in the logs
+ */
 ret_val open_statsd_connection()
 {
   connections.statsd_conn = get_socket(configuration.statsd_server_port,
@@ -97,6 +114,14 @@ ret_val open_statsd_connection()
   return TRUE;
 }
 
+/**
+ * Helper function to send the data we received to the
+ * configured statsd server
+ * @return
+ * TRUE When we sent the data
+ * FALSE when there was some issue, look in the logs
+ */
+
 ret_val send_data_to_statsd(char *data,int data_len)
 {
   int ret = -1;
@@ -105,6 +130,7 @@ ret_val send_data_to_statsd(char *data,int data_len)
   if(ret < 0)
     {
       log(LOG_ERROR, "Was not able to send data, error %s", strerror(errno));
+      return FALSE;
     }
   log(LOG_ERROR, "Send %d bytes", ret);
   return TRUE;

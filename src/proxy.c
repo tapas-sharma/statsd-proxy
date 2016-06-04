@@ -31,15 +31,18 @@ pthread_rwlock_t     req_queue_lock; // lock on the queue
 pthread_rwlockattr_t rwattr ;   //attributes for this lock
 
 /**
- * We will register SIGKILL, SIGINT and SIGSTOP
+ * We will register SIGINT, since we cannot register SIGKILL and SIGSTOP
  */
-
-
 void sig_handler(int signo)
 {
     Queue *node;
     if (signo == SIGINT)
         log(LOG_INFO, "received SIGINT\n");
+    if (signo == SIGABRT)
+        log(LOG_INFO, "received SIGABRT\n");
+    if (signo == SIGSEGV)
+        log(LOG_INFO, "received SIGSEGV\n");
+
     log(LOG_INFO, "Shutdown Initiating");
     //remove pid file so that we can start later
     remove(PID_FILE);
@@ -58,7 +61,12 @@ void sig_handler(int signo)
 void register_signals()
 {
     if (signal(SIGINT, sig_handler) == SIG_ERR)        
-        log(LOG_ERROR, "Not able to register SIGNALS");
+        log(LOG_ERROR, "Not able to register SIGNALS (SIGINT)");
+    if (signal(SIGABRT, sig_handler) == SIG_ERR)        
+        log(LOG_ERROR, "Not able to register SIGNALS (SIGABRT)");
+    if (signal(SIGSEGV, sig_handler) == SIG_ERR)        
+        log(LOG_ERROR, "Not able to register SIGNALS (SIGSEGV)");
+
 }
 
 /**
@@ -76,12 +84,12 @@ void *process_client(void *threadname)
     int n = -1;
     if ( open_statsd_connection() == FALSE)
     {
-        log(LOG_ERROR, "Cannot open connection to stasd server, please check your configuration.");
+        log(LOG_INFO, "Cannot open connection to stasd server, please check your configuration.");
         exit(1);
     }
     if (open_redis_connection() == FALSE)
     {
-        log(LOG_ERROR, "Cannot open connection to redis server, please check your configuration.");
+        log(LOG_INFO, "Cannot open connection to redis server, please check your configuration.");
         exit(1);      
     }
     while (1)
@@ -167,16 +175,21 @@ ret_val extract_key_value_and_insert(char *data)
         return FALSE;
   
     lvalue = atof(value);
-    log(LOG_DEBUG,"Going to insert/increment key: %s with value: %f for type: %s\n", key, lvalue, type);
+    log(LOG_DEBUG,"Going to insert/increment key: %s with value: %f for type: %c\n", key, lvalue, type[0]);
 
     switch(type[0])
     {
     case COUNT:
+    case 'C':
         reply = redisCommand(connections.redis_conn, "GET %s", key);
-        current_value = atof(reply->str);
+        current_value = 0.0;//default
+        if(reply->str != NULL)
+            current_value = atof(reply->str);
+        log(LOG_DEBUG, "GET Command replied with %s", reply->str?reply->str:"NO RESULT FOR GET");
         freeReplyObject(reply);
       
         reply = redisCommand(connections.redis_conn, "SET %s %f", key, lvalue+current_value);
+        log(LOG_DEBUG, "SET Command replied with %s", reply->str?reply->str:"NO RESULT FOR SET");
         freeReplyObject(reply);
       
         log(LOG_DEBUG, "Setting value from %f to %f of key: %s",
