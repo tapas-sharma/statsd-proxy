@@ -1,3 +1,8 @@
+###################################
+#Author: Tapas Sharma
+# Generic makefile for C programs,
+# write once and forget the rest.
+###################################
 #Compiler and Linker
 CC          := gcc
 
@@ -41,6 +46,7 @@ directories:
 clean:
 	@$(RM) -rf $(BUILDDIR)
 	@$(RM) -rf $(TARGETDIR)	
+	@$(RM) -rf $(TESTDIR)/statsd_server.out
 
 #Full Clean, Objects and Binaries
 cleaner: clean

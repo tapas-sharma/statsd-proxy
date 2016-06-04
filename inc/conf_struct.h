@@ -1,3 +1,11 @@
+/*******************************************************
+ * Author  : Tapas Sharma
+ * Email   : tapas.bits@gmail.com
+ * Project : statsd_proxy
+ * Clone   : https://tapassharma@bitbucket.org/tapassharma/statsd-proxy.git
+ * Please read the README.md file before proceeding.
+ *********************************************************/
+
 #ifndef __CONF_STRUCT__
 #define __CONF_STRUCT__
 
