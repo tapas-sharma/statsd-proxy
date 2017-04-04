@@ -38,7 +38,7 @@ The server create a log file under this path with the name
 ~~~~
 After compiling the server, and setting the log file you can run the server as
 ~~~~
-bin/statsd_porxy [conf_file]
+bin/statsd_proxy [conf_file]
 ~~~~
 
 ##Testing
