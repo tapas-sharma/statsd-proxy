@@ -1,5 +1,5 @@
 ---
-layout: main
+layout: default
 ---
 # STATSD_PROXY # {#statsd_proxy-#}
 
