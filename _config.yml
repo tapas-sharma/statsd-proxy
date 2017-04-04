@@ -1,7 +1,7 @@
-title: "Statsd-Proxy"
+title: Statsd-Proxy
 description: "A proxy server that listens on a configured UDP port (default: 8272) forwards the requests to statsd server and publishes data to Redis."
-show_downloads: "false"
-google_analytics: "UA-72723953-1"
-theme: "jekyll-theme-tactile"
+show_downloads: false
+google_analytics: UA-72723953-1
+theme: jekyll-theme-tactile
 baseurl: "/statsd-proxy/"
 
