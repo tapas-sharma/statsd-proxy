@@ -1,123 +1,46 @@
 ---
-layout: default
+layout: main
 ---
+# STATSD_PROXY # {#statsd_proxy-#}
 
-Text can be **bold**, _italic_, or ~~strikethrough~~.
+statsd-proxy, a proxy server that listens on a configured UDP port (default: 8272) forwards the requests to statsd server and publishes data to Redis.
 
-[Link to another page](another-page).
+# Quick summary {#quick-summary}
 
-There should be whitespace between paragraphs.
+The proxy is capabale of performaing the following functions
 
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
+* Will intercept all traffic on the configured port and parse the "c" or count operations.
++ Other operations are currently not supported, but its in the TODO
+* After parsing we will make a key-value pair where the key will be the property and value will be the counter.
+* This key-value (property-counter) will then be published to a redis server
+* After this we will pass this request as is to the configured statsd server in the backend.
 
-# [](#header-1)Header 1
+## Dependencies {#dependencies}
 
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
+For communication with the redis server, we use the standard **hiredis** that can be found here [hiredis github](https://github.com/redis/hiredis)
+Other dependices include
+* glibc
+* pthreads
+* hiredis
+* redi.sh
 
-## [](#header-2)Header 2
+## Compiling {#compiling}
 
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
+To compile the code use the provided make file
+~~~~
+cd statsd-proxy
+make
+~~~~
+Before running you might need to give permission to the following path, for the user you are running the server as
+~~~~
+/var/log/
+~~~~
+The server create a log file under this path with the name
+~~~~
+/var/log/statsd_proxy.log
+~~~~
+After compiling the server, and setting the log file you can run the server as
+~~~~
+bin/statsd_porxy [conf_file]
+~~~~
 
-### [](#header-3)Header 3
-
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
-```
-
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
-```
-
-#### [](#header-4)Header 4
-
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-
-##### [](#header-5)Header 5
-
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
-
-###### [](#header-6)Header 6
-
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
-
-### There's a horizontal rule below this.
-
-* * *
-
-### Here is an unordered list:
-
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
-
-### And an ordered list:
-
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-
-### Small image
-
-![](https://assets-cdn.github.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![](https://guides.github.com/activities/hello-world/branching.png)
-
-
-### Definition lists can be used with HTML syntax.
-
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
-
-```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
-```
-
-```
-The final element.
-```
