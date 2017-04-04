@@ -41,7 +41,7 @@ After compiling the server, and setting the log file you can run the server as
 bin/statsd_proxy [conf_file]
 ~~~~
 
-##Testing
+## Testing
 
 To test make sure the following prerequisites are met
 * You have a local instance of statsd server running on default port
