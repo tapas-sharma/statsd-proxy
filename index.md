@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-# STATSD_PROXY # {#statsd_proxy-#}
+# STATSD_PROXY 
 
 statsd-proxy, a proxy server that listens on a configured UDP port (default: 8272) forwards the requests to statsd server and publishes data to Redis.
 
@@ -90,10 +90,10 @@ There is a sample configuration file, in the conf folder called __statsd_proxy.c
             redis_server_port=6379
 ~~~~
 
-# High level Design flow {#High level Design flow}
+# High level Design flow
 ![statsd_proxy.png](https://bitbucket.org/repo/nM7K57/images/132532422-statsd_proxy.png)
 
-# Limitations and Enhancements {#Limitations and Enhancements}
+# Limitations and Enhancements 
 * See if we can try using syslog() to log things
 * Add test cases to unit test the code, should be available in next few commits
 * Testing with multiple clients connecting at the same time.
@@ -102,6 +102,6 @@ There is a sample configuration file, in the conf folder called __statsd_proxy.c
 # Version {#Version}
 0.1
 
-# Contributor(s) {#Contributor(s)}
+# Contributor(s) 
 
 [Tapas Sharma](mailto:tapas.bits@gmail.com)
